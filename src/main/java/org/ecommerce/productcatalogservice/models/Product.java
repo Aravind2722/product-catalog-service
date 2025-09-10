@@ -13,7 +13,7 @@ import org.yaml.snakeyaml.representer.BaseRepresenter;
 public class Product extends BaseModel {
     private String title;
     private String description;
-    private Long price;
+    private Double price;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     private Category category;
     private String image;
