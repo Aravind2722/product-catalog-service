@@ -1,4 +1,5 @@
-package org.ecommerce.productcatalogservice.dtos;
+package org.ecommerce.productcatalogservice.dtos.fakestore_dtos;
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,7 @@ import org.ecommerce.productcatalogservice.models.Product;
 
 @Getter
 @Setter
-public class GetSingleFakeStoreProductResponseDto {
+public class FakeStoreProductDto {
     private Long id;
     private String title;
     private Double price;

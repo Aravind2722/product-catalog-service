@@ -1,16 +1,12 @@
 package org.ecommerce.productcatalogservice.dtos;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import org.ecommerce.productcatalogservice.dtos.enums.ResponseStatus;
-import org.ecommerce.productcatalogservice.models.Product;
 
 @Getter
 @Setter
-public class GetSingleProductResponseDto {
-    private ProductDto productDto;
+public class ErrorResponse {
     private String message;
     private ResponseStatus responseStatus;
-
 }

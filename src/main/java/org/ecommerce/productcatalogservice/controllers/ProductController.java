@@ -1,21 +1,21 @@
 package org.ecommerce.productcatalogservice.controllers;
 
 
-import org.ecommerce.productcatalogservice.dtos.GetSingleFakeStoreProductResponseDto;
-import org.ecommerce.productcatalogservice.dtos.GetSingleProductResponseDto;
+import org.ecommerce.productcatalogservice.dtos.*;
+import org.ecommerce.productcatalogservice.dtos.enums.ResponseStatus;
+import org.ecommerce.productcatalogservice.exceptions.ProductNotFoundException;
 import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.services.ProductService;
 import org.ecommerce.productcatalogservice.services.ProductServiceFakeStoreImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("products/")
+@RequestMapping("products")
 public class ProductController {
     private ProductService productService;
 
@@ -24,11 +24,43 @@ public class ProductController {
         this.productService = productServiceFakeStoreImpl;
     }
     @GetMapping("{id}")
-    public ResponseEntity<GetSingleProductResponseDto> getSingleProduct(@PathVariable("id") Long id) {
+    public ResponseEntity<GetSingleProductResponseDto> getSingleProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
         Product product = productService.getSingleProduct(id);
+        GetSingleProductResponseDto responseDto = new GetSingleProductResponseDto();
+        responseDto.setProductDto(ProductDto.fromProduct(product));
+        responseDto.setMessage("Product retrieved successfully.");
+        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
         return new ResponseEntity<>(
-                GetSingleProductResponseDto.fromProduct(product),
+                responseDto,
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("")
+    public ResponseEntity<GetAllProductsResponseDto> getAllProducts() {
+        List<Product> products = productService.getAllProducts();
+        GetAllProductsResponseDto responseDto = new GetAllProductsResponseDto();
+        responseDto.setProductCount((long)products.size());
+        responseDto.setProducts(products.stream().map(ProductDto::fromProduct).toList());
+        responseDto.setMessage("Products retrieved successfully.");
+        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
+
+        return new ResponseEntity<>(
+                responseDto,
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("")
+    public ResponseEntity<CreateProductResponseDto> createProduct(@RequestBody CreateProductRequestDto requestDto) {
+        CreateProductResponseDto responseDto = new CreateProductResponseDto();
+        Product product = productService.createProduct(
+                requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl()
+        );
+        responseDto.setProductDto(ProductDto.fromProduct(product));
+        responseDto.setMessage("Product created successfully");
+        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 }
