@@ -1,6 +1,5 @@
 package org.ecommerce.productcatalogservice.services;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.ecommerce.productcatalogservice.exceptions.ProductNotFoundException;
 import org.ecommerce.productcatalogservice.models.Product;
 
@@ -12,4 +11,6 @@ public interface ProductService {
     Product createProduct(String title, String description, Double price, String categoryName, String imageUrl);
 
     Product updateProduct(Long id, String title, String description, Double price, String categoryName, String imageUrl) throws ProductNotFoundException;
+    Product replaceProduct(Long id, String title, String description, Double price, String categoryName, String imageUrl) throws ProductNotFoundException;
+    void deleteProduct(Long id) throws ProductNotFoundException;
 }

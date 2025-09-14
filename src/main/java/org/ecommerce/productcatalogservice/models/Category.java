@@ -19,7 +19,8 @@ public class Category extends BaseModel {
     private String description;
     private String image;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     @Fetch(FetchMode.JOIN) // However, JPA ignores fetch mode
     private List<Product> products;
 }

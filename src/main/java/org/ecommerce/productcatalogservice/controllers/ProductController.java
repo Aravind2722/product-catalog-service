@@ -20,8 +20,8 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
-    public ProductController(ProductServiceFakeStoreImpl productServiceFakeStoreImpl) {
-        this.productService = productServiceFakeStoreImpl;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
     @GetMapping("{id}")
     public ResponseEntity<GetSingleProductResponseDto> getSingleProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
@@ -65,13 +65,30 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UpdateProductResponseDto> updateProduct(@RequestBody UpdateProductRequestDto requestDto) throws ProductNotFoundException {
-        Product updatedProduct = productService.updateProduct(requestDto.getId(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl());
+    public ResponseEntity<UpdateProductResponseDto> updateProduct(@RequestBody UpdateProductRequestDto requestDto, @PathVariable("id") Long id) throws ProductNotFoundException {
+        Product updatedProduct = productService.updateProduct(id, requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl());
         UpdateProductResponseDto responseDto = new UpdateProductResponseDto();
         responseDto.setUpdatedProduct(ProductDto.fromProduct(updatedProduct));
         responseDto.setMessage("Product updated successfully.");
         responseDto.setResponseStatus(ResponseStatus.SUCCESS);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReplaceProductResponseDto> replaceProduct(@RequestBody ReplaceProductRequestDto requestDto, @PathVariable("id") Long id) throws ProductNotFoundException {
+        Product replaceProduct = productService.replaceProduct(id, requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl());
+        ReplaceProductResponseDto responseDto = new ReplaceProductResponseDto();
+        responseDto.setReplacedProduct(ProductDto.fromProduct(replaceProduct));
+        responseDto.setMessage("Product replaced successfully.");
+        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
+        productService.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
