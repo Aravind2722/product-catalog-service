@@ -1,4 +1,4 @@
-package org.ecommerce.productcatalogservice.services;
+package org.ecommerce.productcatalogservice.services.product;
 
 import org.ecommerce.productcatalogservice.exceptions.ProductNotFoundException;
 import org.ecommerce.productcatalogservice.models.Product;

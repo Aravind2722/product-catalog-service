@@ -1,10 +1,11 @@
-package org.ecommerce.productcatalogservice.dtos;
+package org.ecommerce.productcatalogservice.dtos.responses;
 
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.Getter;
 import lombok.Setter;
+import org.ecommerce.productcatalogservice.dtos.models.ProductDto;
 import org.ecommerce.productcatalogservice.dtos.enums.ResponseStatus;
-import org.ecommerce.productcatalogservice.models.Product;
 
 import java.util.List;
 
@@ -13,6 +14,4 @@ import java.util.List;
 public class GetAllProductsResponseDto {
     private List<ProductDto> products;
     private Long productCount;
-    private String message;
-    private ResponseStatus responseStatus;
 }

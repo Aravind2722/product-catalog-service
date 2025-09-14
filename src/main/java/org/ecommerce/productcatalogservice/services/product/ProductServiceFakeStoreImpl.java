@@ -1,4 +1,4 @@
-package org.ecommerce.productcatalogservice.services;
+package org.ecommerce.productcatalogservice.services.product;
 
 import org.ecommerce.productcatalogservice.dtos.fakestore_dtos.CreateFakeStoreProductRequestDto;
 import org.ecommerce.productcatalogservice.dtos.fakestore_dtos.FakeStoreProductDto;

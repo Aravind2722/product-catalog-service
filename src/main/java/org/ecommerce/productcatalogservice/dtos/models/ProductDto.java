@@ -1,4 +1,4 @@
-package org.ecommerce.productcatalogservice.dtos;
+package org.ecommerce.productcatalogservice.dtos.models;
 
 import lombok.Getter;
 import lombok.Setter;

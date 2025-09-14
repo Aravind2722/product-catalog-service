@@ -1,17 +1,15 @@
-package org.ecommerce.productcatalogservice.dtos;
+package org.ecommerce.productcatalogservice.dtos.requests;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.ecommerce.productcatalogservice.models.Category;
 
 @Getter
 @Setter
-public class CreateProductRequestDto {
+public class ReplaceProductRequestDto {
+    private Long id;
     private String title;
     private String description;
     private Double price;
-    private String imageUrl;
     private String categoryName;
+    private String imageUrl;
 }
-
-

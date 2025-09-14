@@ -1,11 +1,11 @@
-package org.ecommerce.productcatalogservice.dtos;
+package org.ecommerce.productcatalogservice.dtos.requests;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ReplaceProductRequestDto {
+public class UpdateProductRequestDto {
     private Long id;
     private String title;
     private String description;

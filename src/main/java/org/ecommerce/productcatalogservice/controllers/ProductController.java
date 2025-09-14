@@ -1,12 +1,14 @@
 package org.ecommerce.productcatalogservice.controllers;
 
 
-import org.ecommerce.productcatalogservice.dtos.*;
-import org.ecommerce.productcatalogservice.dtos.enums.ResponseStatus;
+import org.ecommerce.productcatalogservice.dtos.models.ProductDto;
+import org.ecommerce.productcatalogservice.dtos.requests.CreateProductRequestDto;
+import org.ecommerce.productcatalogservice.dtos.requests.ReplaceProductRequestDto;
+import org.ecommerce.productcatalogservice.dtos.requests.UpdateProductRequestDto;
+import org.ecommerce.productcatalogservice.dtos.responses.*;
 import org.ecommerce.productcatalogservice.exceptions.ProductNotFoundException;
 import org.ecommerce.productcatalogservice.models.Product;
-import org.ecommerce.productcatalogservice.services.ProductService;
-import org.ecommerce.productcatalogservice.services.ProductServiceFakeStoreImpl;
+import org.ecommerce.productcatalogservice.services.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,75 +17,48 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("/products")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
 
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
     @GetMapping("{id}")
-    public ResponseEntity<GetSingleProductResponseDto> getSingleProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
+    public ResponseEntity<BaseResponse<ProductDto>> getSingleProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
         Product product = productService.getSingleProduct(id);
-        GetSingleProductResponseDto responseDto = new GetSingleProductResponseDto();
-        responseDto.setProductDto(ProductDto.fromProduct(product));
-        responseDto.setMessage("Product retrieved successfully.");
-        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
-        return new ResponseEntity<>(
-                responseDto,
-                HttpStatus.OK
-        );
+        return ResponseEntity.ok(BaseResponse.success("Product retrieved successfully.", ProductDto.fromProduct(product)));
     }
 
     @GetMapping("")
-    public ResponseEntity<GetAllProductsResponseDto> getAllProducts() {
+    public ResponseEntity<BaseResponse<GetAllProductsResponseDto>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
-        GetAllProductsResponseDto responseDto = new GetAllProductsResponseDto();
-        responseDto.setProductCount((long)products.size());
-        responseDto.setProducts(products.stream().map(ProductDto::fromProduct).toList());
-        responseDto.setMessage("Products retrieved successfully.");
-        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
+        GetAllProductsResponseDto getAllProductsResponseDto = new GetAllProductsResponseDto();
+        getAllProductsResponseDto.setProductCount((long)products.size());
+        getAllProductsResponseDto.setProducts(products.stream().map(ProductDto::fromProduct).toList());
 
-        return new ResponseEntity<>(
-                responseDto,
-                HttpStatus.OK
-        );
+        return ResponseEntity.ok(BaseResponse.success("Products retrieved successfully.", getAllProductsResponseDto));
     }
 
     @PostMapping("")
-    public ResponseEntity<CreateProductResponseDto> createProduct(@RequestBody CreateProductRequestDto requestDto) {
-        CreateProductResponseDto responseDto = new CreateProductResponseDto();
-        Product product = productService.createProduct(
+    public ResponseEntity<BaseResponse<ProductDto>> createProduct(@RequestBody CreateProductRequestDto requestDto) {
+        Product createdProduct = productService.createProduct(
                 requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl()
         );
-        responseDto.setProductDto(ProductDto.fromProduct(product));
-        responseDto.setMessage("Product created successfully");
-        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
-
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(BaseResponse.success("Product created successfully", ProductDto.fromProduct(createdProduct)), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UpdateProductResponseDto> updateProduct(@RequestBody UpdateProductRequestDto requestDto, @PathVariable("id") Long id) throws ProductNotFoundException {
+    public ResponseEntity<BaseResponse<ProductDto>> updateProduct(@RequestBody UpdateProductRequestDto requestDto, @PathVariable("id") Long id) throws ProductNotFoundException {
         Product updatedProduct = productService.updateProduct(id, requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl());
-        UpdateProductResponseDto responseDto = new UpdateProductResponseDto();
-        responseDto.setUpdatedProduct(ProductDto.fromProduct(updatedProduct));
-        responseDto.setMessage("Product updated successfully.");
-        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return ResponseEntity.ok(BaseResponse.success("Product updated successfully.", ProductDto.fromProduct(updatedProduct)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReplaceProductResponseDto> replaceProduct(@RequestBody ReplaceProductRequestDto requestDto, @PathVariable("id") Long id) throws ProductNotFoundException {
-        Product replaceProduct = productService.replaceProduct(id, requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl());
-        ReplaceProductResponseDto responseDto = new ReplaceProductResponseDto();
-        responseDto.setReplacedProduct(ProductDto.fromProduct(replaceProduct));
-        responseDto.setMessage("Product replaced successfully.");
-        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    public ResponseEntity<BaseResponse<ProductDto>> replaceProduct(@RequestBody ReplaceProductRequestDto requestDto, @PathVariable("id") Long id) throws ProductNotFoundException {
+        Product replacedProduct = productService.replaceProduct(id, requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl());
+        return ResponseEntity.ok(BaseResponse.success("Product replaced successfully.", ProductDto.fromProduct(replacedProduct)));
     }
 
     @DeleteMapping("/{id}")
