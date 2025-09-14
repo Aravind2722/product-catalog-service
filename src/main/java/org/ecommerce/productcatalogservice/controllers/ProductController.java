@@ -63,4 +63,15 @@ public class ProductController {
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UpdateProductResponseDto> updateProduct(@RequestBody UpdateProductRequestDto requestDto) throws ProductNotFoundException {
+        Product updatedProduct = productService.updateProduct(requestDto.getId(), requestDto.getTitle(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getCategoryName(), requestDto.getImageUrl());
+        UpdateProductResponseDto responseDto = new UpdateProductResponseDto();
+        responseDto.setUpdatedProduct(ProductDto.fromProduct(updatedProduct));
+        responseDto.setMessage("Product updated successfully.");
+        responseDto.setResponseStatus(ResponseStatus.SUCCESS);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 }
